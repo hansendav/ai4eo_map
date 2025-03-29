@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        /* Inline Leaflet CSS */
+        /* Copy the content of https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css here */
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; right: 0; left: 0; }
+        .leaflet-container { font-size: 1rem; }
+    </style>
+    <style>
+        /* Inline Awesome Markers CSS */
+        /* Copy the content of https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css here */
+    </style>
+</head>
+<body>
+    <div id="map" style="width: 100%; height: 100%;"></div>
+    <script>
+        /* Inline Leaflet JS */
+        /* Copy the content of https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js here */
+    </script>
+    <script>
+        /* Inline Awesome Markers JS */
+        /* Copy the content of https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js here */
+    </script>
+    <script>
+        // Initialize the map
+        var map = L.map('map', {
+            center: [48.1173, -1.6778],
+            zoom: 11.7,
+            zoomControl: true,
+            preferCanvas: false
+        });
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Add markers
+        var markers = [
+            {
+                coords: [48.0680706, -1.7281062],
+                popup: '<b>Aéroport Bus Stop</b><br><a href="https://www.google.com/maps/place/A%C3%A9roport" target="_blank">Google Maps</a>',
+                icon: { markerColor: 'beige', iconColor: 'white', icon: 'plane-departure', prefix: 'fa' }
+            },
+            {
+                coords: [48.1035102, -1.6720437],
+                popup: '<b>Gares de Rennes</b><br><a href="https://www.google.com/maps/place/Rennes" target="_blank">Google Maps</a>',
+                icon: { markerColor: 'beige', iconColor: 'white', icon: 'train', prefix: 'fa' }
+            },
+            {
+                coords: [48.12212, -1.63911],
+                popup: '<b>Beaulieu - Université Metro Station</b><br><a href="https://www.google.com/maps/place/Beaulieu+-+Universit%C3%A9" target="_blank">Google Maps</a>',
+                icon: { markerColor: 'beige', iconColor: 'white', icon: 'train-subway', prefix: 'fa' }
+            },
+            {
+                coords: [48.11403, -1.63602],
+                popup: '<b>Tournebride Bus Stop</b><br><a href="https://www.google.com/maps/place/Tournebride" target="_blank">Google Maps</a>',
+                icon: { markerColor: 'beige', iconColor: 'white', icon: 'bus', prefix: 'fa' }
+            },
+            {
+                coords: [48.11624, -1.63944],
+                popup: '<b>Inria Center</b><br><a href="https://www.google.com/maps/place/Inria+centre+at+Rennes+University" target="_blank">Google Maps</a>',
+                icon: { markerColor: 'green', iconColor: 'white', icon: 'satellite', prefix: 'fa' }
+            }
+            // Add more markers as needed
+        ];
+
+        // Add markers to the map
+        markers.forEach(function(marker) {
+            var icon = L.AwesomeMarkers.icon(marker.icon);
+            L.marker(marker.coords, { icon: icon })
+                .bindPopup(marker.popup)
+                .addTo(map);
+        });
+    </script>
+</body>
+</html>
