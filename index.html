@@ -1,1378 +1,499 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <style>
-        /* Inline Leaflet CSS */
-        /* Copy the content of https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css here */
-        /* required styles */
-        /* required styles */
-/* required styles */
-
-.leaflet-pane,
-.leaflet-tile,
-.leaflet-marker-icon,
-.leaflet-marker-shadow,
-.leaflet-tile-container,
-.leaflet-pane > svg,
-.leaflet-pane > canvas,
-.leaflet-zoom-box,
-.leaflet-image-layer,
-.leaflet-layer {
-	position: absolute;
-	left: 0;
-	top: 0;
-	}
-.leaflet-container {
-	overflow: hidden;
-	}
-.leaflet-tile,
-.leaflet-marker-icon,
-.leaflet-marker-shadow {
-	-webkit-user-select: none;
-	   -moz-user-select: none;
-	        user-select: none;
-	  -webkit-user-drag: none;
-	}
-/* Prevents IE11 from highlighting tiles in blue */
-.leaflet-tile::selection {
-	background: transparent;
-}
-/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
-.leaflet-safari .leaflet-tile {
-	image-rendering: -webkit-optimize-contrast;
-	}
-/* hack that prevents hw layers "stretching" when loading new tiles */
-.leaflet-safari .leaflet-tile-container {
-	width: 1600px;
-	height: 1600px;
-	-webkit-transform-origin: 0 0;
-	}
-.leaflet-marker-icon,
-.leaflet-marker-shadow {
-	display: block;
-	}
-/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
-/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
-.leaflet-container .leaflet-overlay-pane svg {
-	max-width: none !important;
-	max-height: none !important;
-	}
-.leaflet-container .leaflet-marker-pane img,
-.leaflet-container .leaflet-shadow-pane img,
-.leaflet-container .leaflet-tile-pane img,
-.leaflet-container img.leaflet-image-layer,
-.leaflet-container .leaflet-tile {
-	max-width: none !important;
-	max-height: none !important;
-	width: auto;
-	padding: 0;
-	}
-
-.leaflet-container.leaflet-touch-zoom {
-	-ms-touch-action: pan-x pan-y;
-	touch-action: pan-x pan-y;
-	}
-.leaflet-container.leaflet-touch-drag {
-	-ms-touch-action: pinch-zoom;
-	/* Fallback for FF which doesn't support pinch-zoom */
-	touch-action: none;
-	touch-action: pinch-zoom;
-}
-.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
-	-ms-touch-action: none;
-	touch-action: none;
-}
-.leaflet-container {
-	-webkit-tap-highlight-color: transparent;
-}
-.leaflet-container a {
-	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
-}
-.leaflet-tile {
-	filter: inherit;
-	visibility: hidden;
-	}
-.leaflet-tile-loaded {
-	visibility: inherit;
-	}
-.leaflet-zoom-box {
-	width: 0;
-	height: 0;
-	-moz-box-sizing: border-box;
-	     box-sizing: border-box;
-	z-index: 800;
-	}
-/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
-.leaflet-overlay-pane svg {
-	-moz-user-select: none;
-	}
-
-.leaflet-pane         { z-index: 400; }
-
-.leaflet-tile-pane    { z-index: 200; }
-.leaflet-overlay-pane { z-index: 400; }
-.leaflet-shadow-pane  { z-index: 500; }
-.leaflet-marker-pane  { z-index: 600; }
-.leaflet-tooltip-pane   { z-index: 650; }
-.leaflet-popup-pane   { z-index: 700; }
-
-.leaflet-map-pane canvas { z-index: 100; }
-.leaflet-map-pane svg    { z-index: 200; }
-
-.leaflet-vml-shape {
-	width: 1px;
-	height: 1px;
-	}
-.lvml {
-	behavior: url(#default#VML);
-	display: inline-block;
-	position: absolute;
-	}
-
-
-/* control positioning */
-
-.leaflet-control {
-	position: relative;
-	z-index: 800;
-	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
-	pointer-events: auto;
-	}
-.leaflet-top,
-.leaflet-bottom {
-	position: absolute;
-	z-index: 1000;
-	pointer-events: none;
-	}
-.leaflet-top {
-	top: 0;
-	}
-.leaflet-right {
-	right: 0;
-	}
-.leaflet-bottom {
-	bottom: 0;
-	}
-.leaflet-left {
-	left: 0;
-	}
-.leaflet-control {
-	float: left;
-	clear: both;
-	}
-.leaflet-right .leaflet-control {
-	float: right;
-	}
-.leaflet-top .leaflet-control {
-	margin-top: 10px;
-	}
-.leaflet-bottom .leaflet-control {
-	margin-bottom: 10px;
-	}
-.leaflet-left .leaflet-control {
-	margin-left: 10px;
-	}
-.leaflet-right .leaflet-control {
-	margin-right: 10px;
-	}
-
-
-/* zoom and fade animations */
-
-.leaflet-fade-anim .leaflet-popup {
-	opacity: 0;
-	-webkit-transition: opacity 0.2s linear;
-	   -moz-transition: opacity 0.2s linear;
-	        transition: opacity 0.2s linear;
-	}
-.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
-	opacity: 1;
-	}
-.leaflet-zoom-animated {
-	-webkit-transform-origin: 0 0;
-	    -ms-transform-origin: 0 0;
-	        transform-origin: 0 0;
-	}
-svg.leaflet-zoom-animated {
-	will-change: transform;
-}
-
-.leaflet-zoom-anim .leaflet-zoom-animated {
-	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
-	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
-	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
-	}
-.leaflet-zoom-anim .leaflet-tile,
-.leaflet-pan-anim .leaflet-tile {
-	-webkit-transition: none;
-	   -moz-transition: none;
-	        transition: none;
-	}
-
-.leaflet-zoom-anim .leaflet-zoom-hide {
-	visibility: hidden;
-	}
-
-
-/* cursors */
-
-.leaflet-interactive {
-	cursor: pointer;
-	}
-.leaflet-grab {
-	cursor: -webkit-grab;
-	cursor:    -moz-grab;
-	cursor:         grab;
-	}
-.leaflet-crosshair,
-.leaflet-crosshair .leaflet-interactive {
-	cursor: crosshair;
-	}
-.leaflet-popup-pane,
-.leaflet-control {
-	cursor: auto;
-	}
-.leaflet-dragging .leaflet-grab,
-.leaflet-dragging .leaflet-grab .leaflet-interactive,
-.leaflet-dragging .leaflet-marker-draggable {
-	cursor: move;
-	cursor: -webkit-grabbing;
-	cursor:    -moz-grabbing;
-	cursor:         grabbing;
-	}
-
-/* marker & overlays interactivity */
-.leaflet-marker-icon,
-.leaflet-marker-shadow,
-.leaflet-image-layer,
-.leaflet-pane > svg path,
-.leaflet-tile-container {
-	pointer-events: none;
-	}
-
-.leaflet-marker-icon.leaflet-interactive,
-.leaflet-image-layer.leaflet-interactive,
-.leaflet-pane > svg path.leaflet-interactive,
-svg.leaflet-image-layer.leaflet-interactive path {
-	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
-	pointer-events: auto;
-	}
-
-/* visual tweaks */
-
-.leaflet-container {
-	background: #ddd;
-	outline-offset: 1px;
-	}
-.leaflet-container a {
-	color: #0078A8;
-	}
-.leaflet-zoom-box {
-	border: 2px dotted #38f;
-	background: rgba(255,255,255,0.5);
-	}
-
-
-/* general typography */
-.leaflet-container {
-	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-size: 0.75rem;
-	line-height: 1.5;
-	}
-
-
-/* general toolbar styles */
-
-.leaflet-bar {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-	border-radius: 4px;
-	}
-.leaflet-bar a {
-	background-color: #fff;
-	border-bottom: 1px solid #ccc;
-	width: 26px;
-	height: 26px;
-	line-height: 26px;
-	display: block;
-	text-align: center;
-	text-decoration: none;
-	color: black;
-	}
-.leaflet-bar a,
-.leaflet-control-layers-toggle {
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	display: block;
-	}
-.leaflet-bar a:hover,
-.leaflet-bar a:focus {
-	background-color: #f4f4f4;
-	}
-.leaflet-bar a:first-child {
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	}
-.leaflet-bar a:last-child {
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
-	border-bottom: none;
-	}
-.leaflet-bar a.leaflet-disabled {
-	cursor: default;
-	background-color: #f4f4f4;
-	color: #bbb;
-	}
-
-.leaflet-touch .leaflet-bar a {
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
-	}
-.leaflet-touch .leaflet-bar a:first-child {
-	border-top-left-radius: 2px;
-	border-top-right-radius: 2px;
-	}
-.leaflet-touch .leaflet-bar a:last-child {
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
-	}
-
-/* zoom control */
-
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out {
-	font: bold 18px 'Lucida Console', Monaco, monospace;
-	text-indent: 1px;
-	}
-
-.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
-	font-size: 22px;
-	}
-
-
-/* layers control */
-
-.leaflet-control-layers {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	background: #fff;
-	border-radius: 5px;
-	}
-.leaflet-control-layers-toggle {
-	background-image: url(images/layers.png);
-	width: 36px;
-	height: 36px;
-	}
-.leaflet-retina .leaflet-control-layers-toggle {
-	background-image: url(images/layers-2x.png);
-	background-size: 26px 26px;
-	}
-.leaflet-touch .leaflet-control-layers-toggle {
-	width: 44px;
-	height: 44px;
-	}
-.leaflet-control-layers .leaflet-control-layers-list,
-.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
-	display: none;
-	}
-.leaflet-control-layers-expanded .leaflet-control-layers-list {
-	display: block;
-	position: relative;
-	}
-.leaflet-control-layers-expanded {
-	padding: 6px 10px 6px 6px;
-	color: #333;
-	background: #fff;
-	}
-.leaflet-control-layers-scrollbar {
-	overflow-y: scroll;
-	overflow-x: hidden;
-	padding-right: 5px;
-	}
-.leaflet-control-layers-selector {
-	margin-top: 2px;
-	position: relative;
-	top: 1px;
-	}
-.leaflet-control-layers label {
-	display: block;
-	font-size: 13px;
-	font-size: 1.08333em;
-	}
-.leaflet-control-layers-separator {
-	height: 0;
-	border-top: 1px solid #ddd;
-	margin: 5px -10px 5px -6px;
-	}
-
-/* Default icon URLs */
-.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
-	background-image: url(images/marker-icon.png);
-	}
-
-
-/* attribution and scale controls */
-
-.leaflet-container .leaflet-control-attribution {
-	background: #fff;
-	background: rgba(255, 255, 255, 0.8);
-	margin: 0;
-	}
-.leaflet-control-attribution,
-.leaflet-control-scale-line {
-	padding: 0 5px;
-	color: #333;
-	line-height: 1.4;
-	}
-.leaflet-control-attribution a {
-	text-decoration: none;
-	}
-.leaflet-control-attribution a:hover,
-.leaflet-control-attribution a:focus {
-	text-decoration: underline;
-	}
-.leaflet-attribution-flag {
-	display: inline !important;
-	vertical-align: baseline !important;
-	width: 1em;
-	height: 0.6669em;
-	}
-.leaflet-left .leaflet-control-scale {
-	margin-left: 5px;
-	}
-.leaflet-bottom .leaflet-control-scale {
-	margin-bottom: 5px;
-	}
-.leaflet-control-scale-line {
-	border: 2px solid #777;
-	border-top: none;
-	line-height: 1.1;
-	padding: 2px 5px 1px;
-	white-space: nowrap;
-	-moz-box-sizing: border-box;
-	     box-sizing: border-box;
-	background: rgba(255, 255, 255, 0.8);
-	text-shadow: 1px 1px #fff;
-	}
-.leaflet-control-scale-line:not(:first-child) {
-	border-top: 2px solid #777;
-	border-bottom: none;
-	margin-top: -2px;
-	}
-.leaflet-control-scale-line:not(:first-child):not(:last-child) {
-	border-bottom: 2px solid #777;
-	}
-
-.leaflet-touch .leaflet-control-attribution,
-.leaflet-touch .leaflet-control-layers,
-.leaflet-touch .leaflet-bar {
-	box-shadow: none;
-	}
-.leaflet-touch .leaflet-control-layers,
-.leaflet-touch .leaflet-bar {
-	border: 2px solid rgba(0,0,0,0.2);
-	background-clip: padding-box;
-	}
-
-
-/* popup */
-
-.leaflet-popup {
-	position: absolute;
-	text-align: center;
-	margin-bottom: 20px;
-	}
-.leaflet-popup-content-wrapper {
-	padding: 1px;
-	text-align: left;
-	border-radius: 12px;
-	}
-.leaflet-popup-content {
-	margin: 13px 24px 13px 20px;
-	line-height: 1.3;
-	font-size: 13px;
-	font-size: 1.08333em;
-	min-height: 1px;
-	}
-.leaflet-popup-content p {
-	margin: 17px 0;
-	margin: 1.3em 0;
-	}
-.leaflet-popup-tip-container {
-	width: 40px;
-	height: 20px;
-	position: absolute;
-	left: 50%;
-	margin-top: -1px;
-	margin-left: -20px;
-	overflow: hidden;
-	pointer-events: none;
-	}
-.leaflet-popup-tip {
-	width: 17px;
-	height: 17px;
-	padding: 1px;
-
-	margin: -10px auto 0;
-	pointer-events: auto;
-
-	-webkit-transform: rotate(45deg);
-	   -moz-transform: rotate(45deg);
-	    -ms-transform: rotate(45deg);
-	        transform: rotate(45deg);
-	}
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-	background: white;
-	color: #333;
-	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
-	}
-.leaflet-container a.leaflet-popup-close-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	border: none;
-	text-align: center;
-	width: 24px;
-	height: 24px;
-	font: 16px/24px Tahoma, Verdana, sans-serif;
-	color: #757575;
-	text-decoration: none;
-	background: transparent;
-	}
-.leaflet-container a.leaflet-popup-close-button:hover,
-.leaflet-container a.leaflet-popup-close-button:focus {
-	color: #585858;
-	}
-.leaflet-popup-scrolled {
-	overflow: auto;
-	}
-
-.leaflet-oldie .leaflet-popup-content-wrapper {
-	-ms-zoom: 1;
-	}
-.leaflet-oldie .leaflet-popup-tip {
-	width: 24px;
-	margin: 0 auto;
-
-	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
-	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
-	}
-
-.leaflet-oldie .leaflet-control-zoom,
-.leaflet-oldie .leaflet-control-layers,
-.leaflet-oldie .leaflet-popup-content-wrapper,
-.leaflet-oldie .leaflet-popup-tip {
-	border: 1px solid #999;
-	}
-
-
-/* div icon */
-
-.leaflet-div-icon {
-	background: #fff;
-	border: 1px solid #666;
-	}
-
-
-/* Tooltip */
-/* Base styles for the element that has a tooltip */
-.leaflet-tooltip {
-	position: absolute;
-	padding: 6px;
-	background-color: #fff;
-	border: 1px solid #fff;
-	border-radius: 3px;
-	color: #222;
-	white-space: nowrap;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	pointer-events: none;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-	}
-.leaflet-tooltip.leaflet-interactive {
-	cursor: pointer;
-	pointer-events: auto;
-	}
-.leaflet-tooltip-top:before,
-.leaflet-tooltip-bottom:before,
-.leaflet-tooltip-left:before,
-.leaflet-tooltip-right:before {
-	position: absolute;
-	pointer-events: none;
-	border: 6px solid transparent;
-	background: transparent;
-	content: "";
-	}
-
-/* Directions */
-
-.leaflet-tooltip-bottom {
-	margin-top: 6px;
-}
-.leaflet-tooltip-top {
-	margin-top: -6px;
-}
-.leaflet-tooltip-bottom:before,
-.leaflet-tooltip-top:before {
-	left: 50%;
-	margin-left: -6px;
-	}
-.leaflet-tooltip-top:before {
-	bottom: 0;
-	margin-bottom: -12px;
-	border-top-color: #fff;
-	}
-.leaflet-tooltip-bottom:before {
-	top: 0;
-	margin-top: -12px;
-	margin-left: -6px;
-	border-bottom-color: #fff;
-	}
-.leaflet-tooltip-left {
-	margin-left: -6px;
-}
-.leaflet-tooltip-right {
-	margin-left: 6px;
-}
-.leaflet-tooltip-left:before,
-.leaflet-tooltip-right:before {
-	top: 50%;
-	margin-top: -6px;
-	}
-.leaflet-tooltip-left:before {
-	right: 0;
-	margin-right: -12px;
-	border-left-color: #fff;
-	}
-.leaflet-tooltip-right:before {
-	left: 0;
-	margin-left: -12px;
-	border-right-color: #fff;
-	}
-
-/* Printing */
-	
-@media print {
-	/* Prevent printers from removing background-images of controls. */
-	.leaflet-control {
-		-webkit-print-color-adjust: exact;
-		print-color-adjust: exact;
-		}
-	}
-.leaflet-pane,
-.leaflet-tile,
-.leaflet-marker-icon,
-.leaflet-marker-shadow,
-.leaflet-tile-container,
-.leaflet-pane > svg,
-.leaflet-pane > canvas,
-.leaflet-zoom-box,
-.leaflet-image-layer,
-.leaflet-layer {
-	position: absolute;
-	left: 0;
-	top: 0;
-	}
-.leaflet-container {
-	overflow: hidden;
-	}
-.leaflet-tile,
-.leaflet-marker-icon,
-.leaflet-marker-shadow {
-	-webkit-user-select: none;
-	   -moz-user-select: none;
-	        user-select: none;
-	  -webkit-user-drag: none;
-	}
-/* Prevents IE11 from highlighting tiles in blue */
-.leaflet-tile::selection {
-	background: transparent;
-}
-/* Safari renders non-retina tile on retina better with this, but Chrome is worse */
-.leaflet-safari .leaflet-tile {
-	image-rendering: -webkit-optimize-contrast;
-	}
-/* hack that prevents hw layers "stretching" when loading new tiles */
-.leaflet-safari .leaflet-tile-container {
-	width: 1600px;
-	height: 1600px;
-	-webkit-transform-origin: 0 0;
-	}
-.leaflet-marker-icon,
-.leaflet-marker-shadow {
-	display: block;
-	}
-/* .leaflet-container svg: reset svg max-width decleration shipped in Joomla! (joomla.org) 3.x */
-/* .leaflet-container img: map is broken in FF if you have max-width: 100% on tiles */
-.leaflet-container .leaflet-overlay-pane svg {
-	max-width: none !important;
-	max-height: none !important;
-	}
-.leaflet-container .leaflet-marker-pane img,
-.leaflet-container .leaflet-shadow-pane img,
-.leaflet-container .leaflet-tile-pane img,
-.leaflet-container img.leaflet-image-layer,
-.leaflet-container .leaflet-tile {
-	max-width: none !important;
-	max-height: none !important;
-	width: auto;
-	padding: 0;
-	}
-
-.leaflet-container.leaflet-touch-zoom {
-	-ms-touch-action: pan-x pan-y;
-	touch-action: pan-x pan-y;
-	}
-.leaflet-container.leaflet-touch-drag {
-	-ms-touch-action: pinch-zoom;
-	/* Fallback for FF which doesn't support pinch-zoom */
-	touch-action: none;
-	touch-action: pinch-zoom;
-}
-.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
-	-ms-touch-action: none;
-	touch-action: none;
-}
-.leaflet-container {
-	-webkit-tap-highlight-color: transparent;
-}
-.leaflet-container a {
-	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
-}
-.leaflet-tile {
-	filter: inherit;
-	visibility: hidden;
-	}
-.leaflet-tile-loaded {
-	visibility: inherit;
-	}
-.leaflet-zoom-box {
-	width: 0;
-	height: 0;
-	-moz-box-sizing: border-box;
-	     box-sizing: border-box;
-	z-index: 800;
-	}
-/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */
-.leaflet-overlay-pane svg {
-	-moz-user-select: none;
-	}
-
-.leaflet-pane         { z-index: 400; }
-
-.leaflet-tile-pane    { z-index: 200; }
-.leaflet-overlay-pane { z-index: 400; }
-.leaflet-shadow-pane  { z-index: 500; }
-.leaflet-marker-pane  { z-index: 600; }
-.leaflet-tooltip-pane   { z-index: 650; }
-.leaflet-popup-pane   { z-index: 700; }
-
-.leaflet-map-pane canvas { z-index: 100; }
-.leaflet-map-pane svg    { z-index: 200; }
-
-.leaflet-vml-shape {
-	width: 1px;
-	height: 1px;
-	}
-.lvml {
-	behavior: url(#default#VML);
-	display: inline-block;
-	position: absolute;
-	}
-
-
-/* control positioning */
-
-.leaflet-control {
-	position: relative;
-	z-index: 800;
-	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
-	pointer-events: auto;
-	}
-.leaflet-top,
-.leaflet-bottom {
-	position: absolute;
-	z-index: 1000;
-	pointer-events: none;
-	}
-.leaflet-top {
-	top: 0;
-	}
-.leaflet-right {
-	right: 0;
-	}
-.leaflet-bottom {
-	bottom: 0;
-	}
-.leaflet-left {
-	left: 0;
-	}
-.leaflet-control {
-	float: left;
-	clear: both;
-	}
-.leaflet-right .leaflet-control {
-	float: right;
-	}
-.leaflet-top .leaflet-control {
-	margin-top: 10px;
-	}
-.leaflet-bottom .leaflet-control {
-	margin-bottom: 10px;
-	}
-.leaflet-left .leaflet-control {
-	margin-left: 10px;
-	}
-.leaflet-right .leaflet-control {
-	margin-right: 10px;
-	}
-
-
-/* zoom and fade animations */
-
-.leaflet-fade-anim .leaflet-popup {
-	opacity: 0;
-	-webkit-transition: opacity 0.2s linear;
-	   -moz-transition: opacity 0.2s linear;
-	        transition: opacity 0.2s linear;
-	}
-.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
-	opacity: 1;
-	}
-.leaflet-zoom-animated {
-	-webkit-transform-origin: 0 0;
-	    -ms-transform-origin: 0 0;
-	        transform-origin: 0 0;
-	}
-svg.leaflet-zoom-animated {
-	will-change: transform;
-}
-
-.leaflet-zoom-anim .leaflet-zoom-animated {
-	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
-	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
-	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
-	}
-.leaflet-zoom-anim .leaflet-tile,
-.leaflet-pan-anim .leaflet-tile {
-	-webkit-transition: none;
-	   -moz-transition: none;
-	        transition: none;
-	}
-
-.leaflet-zoom-anim .leaflet-zoom-hide {
-	visibility: hidden;
-	}
-
-
-/* cursors */
-
-.leaflet-interactive {
-	cursor: pointer;
-	}
-.leaflet-grab {
-	cursor: -webkit-grab;
-	cursor:    -moz-grab;
-	cursor:         grab;
-	}
-.leaflet-crosshair,
-.leaflet-crosshair .leaflet-interactive {
-	cursor: crosshair;
-	}
-.leaflet-popup-pane,
-.leaflet-control {
-	cursor: auto;
-	}
-.leaflet-dragging .leaflet-grab,
-.leaflet-dragging .leaflet-grab .leaflet-interactive,
-.leaflet-dragging .leaflet-marker-draggable {
-	cursor: move;
-	cursor: -webkit-grabbing;
-	cursor:    -moz-grabbing;
-	cursor:         grabbing;
-	}
-
-/* marker & overlays interactivity */
-.leaflet-marker-icon,
-.leaflet-marker-shadow,
-.leaflet-image-layer,
-.leaflet-pane > svg path,
-.leaflet-tile-container {
-	pointer-events: none;
-	}
-
-.leaflet-marker-icon.leaflet-interactive,
-.leaflet-image-layer.leaflet-interactive,
-.leaflet-pane > svg path.leaflet-interactive,
-svg.leaflet-image-layer.leaflet-interactive path {
-	pointer-events: visiblePainted; /* IE 9-10 doesn't have auto */
-	pointer-events: auto;
-	}
-
-/* visual tweaks */
-
-.leaflet-container {
-	background: #ddd;
-	outline-offset: 1px;
-	}
-.leaflet-container a {
-	color: #0078A8;
-	}
-.leaflet-zoom-box {
-	border: 2px dotted #38f;
-	background: rgba(255,255,255,0.5);
-	}
-
-
-/* general typography */
-.leaflet-container {
-	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-size: 0.75rem;
-	line-height: 1.5;
-	}
-
-
-/* general toolbar styles */
-
-.leaflet-bar {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-	border-radius: 4px;
-	}
-.leaflet-bar a {
-	background-color: #fff;
-	border-bottom: 1px solid #ccc;
-	width: 26px;
-	height: 26px;
-	line-height: 26px;
-	display: block;
-	text-align: center;
-	text-decoration: none;
-	color: black;
-	}
-.leaflet-bar a,
-.leaflet-control-layers-toggle {
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	display: block;
-	}
-.leaflet-bar a:hover,
-.leaflet-bar a:focus {
-	background-color: #f4f4f4;
-	}
-.leaflet-bar a:first-child {
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-	}
-.leaflet-bar a:last-child {
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
-	border-bottom: none;
-	}
-.leaflet-bar a.leaflet-disabled {
-	cursor: default;
-	background-color: #f4f4f4;
-	color: #bbb;
-	}
-
-.leaflet-touch .leaflet-bar a {
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
-	}
-.leaflet-touch .leaflet-bar a:first-child {
-	border-top-left-radius: 2px;
-	border-top-right-radius: 2px;
-	}
-.leaflet-touch .leaflet-bar a:last-child {
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
-	}
-
-/* zoom control */
-
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out {
-	font: bold 18px 'Lucida Console', Monaco, monospace;
-	text-indent: 1px;
-	}
-
-.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
-	font-size: 22px;
-	}
-
-
-/* layers control */
-
-.leaflet-control-layers {
-	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-	background: #fff;
-	border-radius: 5px;
-	}
-.leaflet-control-layers-toggle {
-	background-image: url(images/layers.png);
-	width: 36px;
-	height: 36px;
-	}
-.leaflet-retina .leaflet-control-layers-toggle {
-	background-image: url(images/layers-2x.png);
-	background-size: 26px 26px;
-	}
-.leaflet-touch .leaflet-control-layers-toggle {
-	width: 44px;
-	height: 44px;
-	}
-.leaflet-control-layers .leaflet-control-layers-list,
-.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
-	display: none;
-	}
-.leaflet-control-layers-expanded .leaflet-control-layers-list {
-	display: block;
-	position: relative;
-	}
-.leaflet-control-layers-expanded {
-	padding: 6px 10px 6px 6px;
-	color: #333;
-	background: #fff;
-	}
-.leaflet-control-layers-scrollbar {
-	overflow-y: scroll;
-	overflow-x: hidden;
-	padding-right: 5px;
-	}
-.leaflet-control-layers-selector {
-	margin-top: 2px;
-	position: relative;
-	top: 1px;
-	}
-.leaflet-control-layers label {
-	display: block;
-	font-size: 13px;
-	font-size: 1.08333em;
-	}
-.leaflet-control-layers-separator {
-	height: 0;
-	border-top: 1px solid #ddd;
-	margin: 5px -10px 5px -6px;
-	}
-
-/* Default icon URLs */
-.leaflet-default-icon-path { /* used only in path-guessing heuristic, see L.Icon.Default */
-	background-image: url(images/marker-icon.png);
-	}
-
-
-/* attribution and scale controls */
-
-.leaflet-container .leaflet-control-attribution {
-	background: #fff;
-	background: rgba(255, 255, 255, 0.8);
-	margin: 0;
-	}
-.leaflet-control-attribution,
-.leaflet-control-scale-line {
-	padding: 0 5px;
-	color: #333;
-	line-height: 1.4;
-	}
-.leaflet-control-attribution a {
-	text-decoration: none;
-	}
-.leaflet-control-attribution a:hover,
-.leaflet-control-attribution a:focus {
-	text-decoration: underline;
-	}
-.leaflet-attribution-flag {
-	display: inline !important;
-	vertical-align: baseline !important;
-	width: 1em;
-	height: 0.6669em;
-	}
-.leaflet-left .leaflet-control-scale {
-	margin-left: 5px;
-	}
-.leaflet-bottom .leaflet-control-scale {
-	margin-bottom: 5px;
-	}
-.leaflet-control-scale-line {
-	border: 2px solid #777;
-	border-top: none;
-	line-height: 1.1;
-	padding: 2px 5px 1px;
-	white-space: nowrap;
-	-moz-box-sizing: border-box;
-	     box-sizing: border-box;
-	background: rgba(255, 255, 255, 0.8);
-	text-shadow: 1px 1px #fff;
-	}
-.leaflet-control-scale-line:not(:first-child) {
-	border-top: 2px solid #777;
-	border-bottom: none;
-	margin-top: -2px;
-	}
-.leaflet-control-scale-line:not(:first-child):not(:last-child) {
-	border-bottom: 2px solid #777;
-	}
-
-.leaflet-touch .leaflet-control-attribution,
-.leaflet-touch .leaflet-control-layers,
-.leaflet-touch .leaflet-bar {
-	box-shadow: none;
-	}
-.leaflet-touch .leaflet-control-layers,
-.leaflet-touch .leaflet-bar {
-	border: 2px solid rgba(0,0,0,0.2);
-	background-clip: padding-box;
-	}
-
-
-/* popup */
-
-.leaflet-popup {
-	position: absolute;
-	text-align: center;
-	margin-bottom: 20px;
-	}
-.leaflet-popup-content-wrapper {
-	padding: 1px;
-	text-align: left;
-	border-radius: 12px;
-	}
-.leaflet-popup-content {
-	margin: 13px 24px 13px 20px;
-	line-height: 1.3;
-	font-size: 13px;
-	font-size: 1.08333em;
-	min-height: 1px;
-	}
-.leaflet-popup-content p {
-	margin: 17px 0;
-	margin: 1.3em 0;
-	}
-.leaflet-popup-tip-container {
-	width: 40px;
-	height: 20px;
-	position: absolute;
-	left: 50%;
-	margin-top: -1px;
-	margin-left: -20px;
-	overflow: hidden;
-	pointer-events: none;
-	}
-.leaflet-popup-tip {
-	width: 17px;
-	height: 17px;
-	padding: 1px;
-
-	margin: -10px auto 0;
-	pointer-events: auto;
-
-	-webkit-transform: rotate(45deg);
-	   -moz-transform: rotate(45deg);
-	    -ms-transform: rotate(45deg);
-	        transform: rotate(45deg);
-	}
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-	background: white;
-	color: #333;
-	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
-	}
-.leaflet-container a.leaflet-popup-close-button {
-	position: absolute;
-	top: 0;
-	right: 0;
-	border: none;
-	text-align: center;
-	width: 24px;
-	height: 24px;
-	font: 16px/24px Tahoma, Verdana, sans-serif;
-	color: #757575;
-	text-decoration: none;
-	background: transparent;
-	}
-.leaflet-container a.leaflet-popup-close-button:hover,
-.leaflet-container a.leaflet-popup-close-button:focus {
-	color: #585858;
-	}
-.leaflet-popup-scrolled {
-	overflow: auto;
-	}
-
-.leaflet-oldie .leaflet-popup-content-wrapper {
-	-ms-zoom: 1;
-	}
-.leaflet-oldie .leaflet-popup-tip {
-	width: 24px;
-	margin: 0 auto;
-
-	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
-	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
-	}
-
-.leaflet-oldie .leaflet-control-zoom,
-.leaflet-oldie .leaflet-control-layers,
-.leaflet-oldie .leaflet-popup-content-wrapper,
-.leaflet-oldie .leaflet-popup-tip {
-	border: 1px solid #999;
-	}
-
-
-/* div icon */
-
-.leaflet-div-icon {
-	background: #fff;
-	border: 1px solid #666;
-	}
-
-
-/* Tooltip */
-/* Base styles for the element that has a tooltip */
-.leaflet-tooltip {
-	position: absolute;
-	padding: 6px;
-	background-color: #fff;
-	border: 1px solid #fff;
-	border-radius: 3px;
-	color: #222;
-	white-space: nowrap;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	pointer-events: none;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-	}
-.leaflet-tooltip.leaflet-interactive {
-	cursor: pointer;
-	pointer-events: auto;
-	}
-.leaflet-tooltip-top:before,
-.leaflet-tooltip-bottom:before,
-.leaflet-tooltip-left:before,
-.leaflet-tooltip-right:before {
-	position: absolute;
-	pointer-events: none;
-	border: 6px solid transparent;
-	background: transparent;
-	content: "";
-	}
-
-/* Directions */
-
-.leaflet-tooltip-bottom {
-	margin-top: 6px;
-}
-.leaflet-tooltip-top {
-	margin-top: -6px;
-}
-.leaflet-tooltip-bottom:before,
-.leaflet-tooltip-top:before {
-	left: 50%;
-	margin-left: -6px;
-	}
-.leaflet-tooltip-top:before {
-	bottom: 0;
-	margin-bottom: -12px;
-	border-top-color: #fff;
-	}
-.leaflet-tooltip-bottom:before {
-	top: 0;
-	margin-top: -12px;
-	margin-left: -6px;
-	border-bottom-color: #fff;
-	}
-.leaflet-tooltip-left {
-	margin-left: -6px;
-}
-.leaflet-tooltip-right {
-	margin-left: 6px;
-}
-.leaflet-tooltip-left:before,
-.leaflet-tooltip-right:before {
-	top: 50%;
-	margin-top: -6px;
-	}
-.leaflet-tooltip-left:before {
-	right: 0;
-	margin-right: -12px;
-	border-left-color: #fff;
-	}
-.leaflet-tooltip-right:before {
-	left: 0;
-	margin-left: -12px;
-	border-right-color: #fff;
-	}
-
-/* Printing */
-	
-@media print {
-	/* Prevent printers from removing background-images of controls. */
-	.leaflet-control {
-		-webkit-print-color-adjust: exact;
-		print-color-adjust: exact;
-		}
-	}
-        html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
-        #map { position: absolute; top: 0; bottom: 0; right: 0; left: 0; }
-        .leaflet-container { font-size: 1rem; }
-    </style>
-    <style>
-        /* Inline Awesome Markers CSS */
-        /* Copy the content of https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css here */
-    </style>
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_f9786c2bc4f32371854c7a9794e15848 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
 </head>
 <body>
-    <div id="map" style="width: 100%; height: 100%;"></div>
-    <script>
-        /* Inline Leaflet JS */
-        /* Copy the content of https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js here */
-    </script>
-    <script>
-        /* Inline Awesome Markers JS */
-        /* Copy the content of https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js here */
-    </script>
-    <script>
-        // Initialize the map
-        var map = L.map('map', {
-            center: [48.1173, -1.6778],
-            zoom: 11.7,
-            zoomControl: true,
-            preferCanvas: false
-        });
-
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19
-        }).addTo(map);
-
-        // Add markers
-        var markers = [
-            {
-                coords: [48.0680706, -1.7281062],
-                popup: '<b>Aéroport Bus Stop</b><br><a href="https://www.google.com/maps/place/A%C3%A9roport" target="_blank">Google Maps</a>',
-                icon: { markerColor: 'beige', iconColor: 'white', icon: 'plane-departure', prefix: 'fa' }
-            },
-            {
-                coords: [48.1035102, -1.6720437],
-                popup: '<b>Gares de Rennes</b><br><a href="https://www.google.com/maps/place/Rennes" target="_blank">Google Maps</a>',
-                icon: { markerColor: 'beige', iconColor: 'white', icon: 'train', prefix: 'fa' }
-            }
-        ];
-
-        // Add markers to the map
-        markers.forEach(function(marker) {
-            var icon = L.AwesomeMarkers.icon(marker.icon);
-            L.marker(marker.coords, { icon: icon })
-                .bindPopup(marker.popup)
-                .addTo(map);
-        });
-    </script>
+    
+    
+            <div class="folium-map" id="map_f9786c2bc4f32371854c7a9794e15848" ></div>
+        
 </body>
+<script>
+    
+    
+            var map_f9786c2bc4f32371854c7a9794e15848 = L.map(
+                "map_f9786c2bc4f32371854c7a9794e15848",
+                {
+                    center: [48.1173, -1.6778],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 11.7,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_a691ad974611e0da56619fb0cd1e6870 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_a691ad974611e0da56619fb0cd1e6870.addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var marker_b3d029f7417ea3751ceba3d67055934f = L.marker(
+                [48.0680706, -1.7281062],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_e58945a05b48d2821a8c57ea5912ccf1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "plane-departure",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3ddefa5a5d5229a1f56e8488b822c4f1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_eb881f87d64c67d4e48f89202cb2c60d = $(`<div id="html_eb881f87d64c67d4e48f89202cb2c60d" style="width: 100.0%; height: 100.0%;">             <b>Aéroport Bus Stop</b><br>             <a href=https://www.google.com/maps/place/A%C3%A9roport/@48.0680706,-1.7281062,17.58z/data=!4m14!1m7!3m6!1s0x480ee02bfbc2a56b:0x3a19ce55f664d49c!2sFlughafen+Rennes!8m2!3d48.0695338!4d-1.7322664!16zL20vMGNrbjkw!3m5!1s0x480ee02806442651:0xbc6e7c1c8538ba89!8m2!3d48.0679304!4d-1.7269859!16s%2Fg%2F11fkw8w3x3?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_3ddefa5a5d5229a1f56e8488b822c4f1.setContent(html_eb881f87d64c67d4e48f89202cb2c60d);
+            
+        
+
+        marker_b3d029f7417ea3751ceba3d67055934f.bindPopup(popup_3ddefa5a5d5229a1f56e8488b822c4f1)
+        ;
+
+        
+    
+    
+                marker_b3d029f7417ea3751ceba3d67055934f.setIcon(icon_e58945a05b48d2821a8c57ea5912ccf1);
+            
+    
+            var marker_458eacc850b1918e5e503b9afcfd6990 = L.marker(
+                [48.1035102, -1.6720437],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_7edf0e9a6d47eddf8e7a3b37a5a4ffdc = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "train",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_61723eab0255f526a6ad5c9a8abc9a80 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_a54250837712f7d6f7f8d80c08fb5956 = $(`<div id="html_a54250837712f7d6f7f8d80c08fb5956" style="width: 100.0%; height: 100.0%;">             <b>Gares de Rennes</b><br>             <a href=https://www.google.com/maps/place/Rennes/@48.1035102,-1.6720437,18.17z/data=!4m14!1m7!3m6!1s0x480edfb5c53cfb81:0x2cf8c0efc159dfcc!2sRennes!8m2!3d48.10346!4d-1.6723!16s%2Fg%2F11b6bt8sxv!3m5!1s0x480edfb5c53cfb81:0x2cf8c0efc159dfcc!8m2!3d48.10346!4d-1.6723!16s%2Fg%2F11b6bt8sxv?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_61723eab0255f526a6ad5c9a8abc9a80.setContent(html_a54250837712f7d6f7f8d80c08fb5956);
+            
+        
+
+        marker_458eacc850b1918e5e503b9afcfd6990.bindPopup(popup_61723eab0255f526a6ad5c9a8abc9a80)
+        ;
+
+        
+    
+    
+                marker_458eacc850b1918e5e503b9afcfd6990.setIcon(icon_7edf0e9a6d47eddf8e7a3b37a5a4ffdc);
+            
+    
+            var marker_cee9e5ee2ac5746f4e506fda06cc81e6 = L.marker(
+                [48.12212, -1.63911],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_2fcc6f2a177d5ae0e5b5a1c384ac94c0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "train-subway",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_bb4194d7387f633f9b364f6060e69795 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_e98eec16d86dd8c867c80199ceb43731 = $(`<div id="html_e98eec16d86dd8c867c80199ceb43731" style="width: 100.0%; height: 100.0%;">             <b>Beaulieu - Université Metro Station</b><br>             <a href=https://www.google.com/maps/place/Beaulieu+-+Universit%C3%A9/@48.122129,-1.639116,17z/data=!3m1!4b1!4m6!3m5!1s0x480edeee94dd0347:0xf4ea8ab067324469!8m2!3d48.122129!4d-1.639116!16s%2Fg%2F11b6bn8r0h?entry=ttu&g_ep=EgoyMDI1MDMyNC4wIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_bb4194d7387f633f9b364f6060e69795.setContent(html_e98eec16d86dd8c867c80199ceb43731);
+            
+        
+
+        marker_cee9e5ee2ac5746f4e506fda06cc81e6.bindPopup(popup_bb4194d7387f633f9b364f6060e69795)
+        ;
+
+        
+    
+    
+                marker_cee9e5ee2ac5746f4e506fda06cc81e6.setIcon(icon_2fcc6f2a177d5ae0e5b5a1c384ac94c0);
+            
+    
+            var marker_3b4295447a24f7f6b901ca509141b644 = L.marker(
+                [48.11403, -1.63602],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_d8ab38213389dd2cd08f7a3fbdbf11fd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "bus",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_df2b801dd59edaa62dca7a91f501ec24 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_071e42f489b5b482b47c2875710045d2 = $(`<div id="html_071e42f489b5b482b47c2875710045d2" style="width: 100.0%; height: 100.0%;">             <b>Tournebride Bus Stop</b><br>             <a href=https://www.google.com/maps/place/Tournebride/@48.11403,-1.636024,17z/data=!3m1!4b1!4m6!3m5!1s0x480edee6b75525cb:0xc4eb14400bd802a5!8m2!3d48.11403!4d-1.636024!16s%2Fg%2F11f3y2jjlr?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_df2b801dd59edaa62dca7a91f501ec24.setContent(html_071e42f489b5b482b47c2875710045d2);
+            
+        
+
+        marker_3b4295447a24f7f6b901ca509141b644.bindPopup(popup_df2b801dd59edaa62dca7a91f501ec24)
+        ;
+
+        
+    
+    
+                marker_3b4295447a24f7f6b901ca509141b644.setIcon(icon_d8ab38213389dd2cd08f7a3fbdbf11fd);
+            
+    
+            var marker_79e525f2b14ee6b2b03f348419b42450 = L.marker(
+                [48.11624, -1.63944],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_d246c03e0b49a575bd9e9d6c24f5dd99 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "satellite",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_af3713c54677091e54d87cb9b580a9e3 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_7dd90337d826cd66c6748b6047700bdc = $(`<div id="html_7dd90337d826cd66c6748b6047700bdc" style="width: 100.0%; height: 100.0%;">             <b>Inria Center</b><br>             <a href=https://www.google.com/maps/place/Inria+centre+at+Rennes+University/@48.1162479,-1.6394422,17z/data=!3m1!4b1!4m6!3m5!1s0x480edee5a599f107:0x318da7854b094389!8m2!3d48.1162479!4d-1.6394422!16s%2Fg%2F1thkr2ms?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_af3713c54677091e54d87cb9b580a9e3.setContent(html_7dd90337d826cd66c6748b6047700bdc);
+            
+        
+
+        marker_79e525f2b14ee6b2b03f348419b42450.bindPopup(popup_af3713c54677091e54d87cb9b580a9e3)
+        ;
+
+        
+    
+    
+                marker_79e525f2b14ee6b2b03f348419b42450.setIcon(icon_d246c03e0b49a575bd9e9d6c24f5dd99);
+            
+    
+            var marker_524ab2a44624a0774dfc3e13ba0a8920 = L.marker(
+                [48.06778, -1.71347],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_1c611e6896c6da9ca20d5a019cf379dc = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "train-subway",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ececda676b74d79a0f67683b33d171d5 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_1e80f05473d7caaee242bb8a1f4ef43e = $(`<div id="html_1e80f05473d7caaee242bb8a1f4ef43e" style="width: 100.0%; height: 100.0%;">             <b>Saint-Jacques-de-la-Lande Train Station</b><br>             <a href=https://www.google.com/maps/place/Saint-Jacques-de-la-Lande/@48.0677857,-1.71347,17z/data=!3m1!4b1!4m6!3m5!1s0x480f1fe021c8f6a5:0xceda055a1bbd49d1!8m2!3d48.0677857!4d-1.71347!16s%2Fg%2F1217c9j6?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_ececda676b74d79a0f67683b33d171d5.setContent(html_1e80f05473d7caaee242bb8a1f4ef43e);
+            
+        
+
+        marker_524ab2a44624a0774dfc3e13ba0a8920.bindPopup(popup_ececda676b74d79a0f67683b33d171d5)
+        ;
+
+        
+    
+    
+                marker_524ab2a44624a0774dfc3e13ba0a8920.setIcon(icon_1c611e6896c6da9ca20d5a019cf379dc);
+            
+    
+            var marker_866fd2601d1f9283bf432af2aa574613 = L.marker(
+                [48.06737, -1.72167],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_fe1d48b8360489fbd61643a8f0f75ce1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "bus",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9b5c40758a527e0e9f77cfcefbeb8977 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_496014ad75412f6890ffdcac0f75f568 = $(`<div id="html_496014ad75412f6890ffdcac0f75f568" style="width: 100.0%; height: 100.0%;">             <b>Aire Libre Bus Station</b><br>             <a href=https://www.google.com/maps/place/Aire+Libre/@48.067372,-1.721674,17z/data=!3m1!4b1!4m6!3m5!1s0x480f1fd8a724b8d1:0x52ee5dda266b3ee5!8m2!3d48.067372!4d-1.721674!16s%2Fg%2F11hbr7rhny?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_9b5c40758a527e0e9f77cfcefbeb8977.setContent(html_496014ad75412f6890ffdcac0f75f568);
+            
+        
+
+        marker_866fd2601d1f9283bf432af2aa574613.bindPopup(popup_9b5c40758a527e0e9f77cfcefbeb8977)
+        ;
+
+        
+    
+    
+                marker_866fd2601d1f9283bf432af2aa574613.setIcon(icon_fe1d48b8360489fbd61643a8f0f75ce1);
+            
+    
+            var marker_3ad16bba3d8d8e6f8c27cf505319bda0 = L.marker(
+                [48.11291, -1.68457],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_947f2e36a25ea303ea00884bc195cb86 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "darkblue",
+  "iconColor": "white",
+  "icon": "utensils",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b34f56aa6a361d63a0a260c0336e8d2c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b61ceea495fa8dac882decdd067ba4b0 = $(`<div id="html_b61ceea495fa8dac882decdd067ba4b0" style="width: 100.0%; height: 100.0%;">             <b>La Closerie - Gala Dinner</b><br>             <a href=https://www.google.com/maps/place/La+Closerie/@48.1129138,-1.6845777,17z/data=!3m1!4b1!4m6!3m5!1s0x480edf2a95f40343:0x4cad74a9a320e8da!8m2!3d48.1129138!4d-1.6845777!16s%2Fg%2F11sfqcqz93?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_b34f56aa6a361d63a0a260c0336e8d2c.setContent(html_b61ceea495fa8dac882decdd067ba4b0);
+            
+        
+
+        marker_3ad16bba3d8d8e6f8c27cf505319bda0.bindPopup(popup_b34f56aa6a361d63a0a260c0336e8d2c)
+        ;
+
+        
+    
+    
+                marker_3ad16bba3d8d8e6f8c27cf505319bda0.setIcon(icon_947f2e36a25ea303ea00884bc195cb86);
+            
+    
+            var marker_94197dc3fdbe26c6bf37a06adab65d82 = L.marker(
+                [48.10968, -1.67925],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_da9de7fa226ef0881ed3705eb4162c66 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "bus",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e02f9bbc88dbe1daf4951308f2b392c7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ce5728233192dd9a67809afc66a98f15 = $(`<div id="html_ce5728233192dd9a67809afc66a98f15" style="width: 100.0%; height: 100.0%;">             <b>Rébuplique Bus Stop</b><br>             <a href=https://www.google.com/maps/place/R%C3%A9publique/@48.109684,-1.6792576,17z/data=!3m1!4b1!4m6!3m5!1s0x480ede349027416b:0x2171776be0777746!8m2!3d48.109684!4d-1.6792576!16s%2Fg%2F11b6bv627g?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_e02f9bbc88dbe1daf4951308f2b392c7.setContent(html_ce5728233192dd9a67809afc66a98f15);
+            
+        
+
+        marker_94197dc3fdbe26c6bf37a06adab65d82.bindPopup(popup_e02f9bbc88dbe1daf4951308f2b392c7)
+        ;
+
+        
+    
+    
+                marker_94197dc3fdbe26c6bf37a06adab65d82.setIcon(icon_da9de7fa226ef0881ed3705eb4162c66);
+            
+    
+            var marker_1a36ad5c39cef61cf89954bf84d344bd = L.marker(
+                [48.10984, -1.67317],
+                {
+}
+            ).addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+            var icon_0c112ae6e38941977bd531a30abad9fd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "beige",
+  "iconColor": "white",
+  "icon": "bus",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_28f08259f296a2ae4a991f80e79c031b = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f1d0735170088192a6acec679fe79727 = $(`<div id="html_f1d0735170088192a6acec679fe79727" style="width: 100.0%; height: 100.0%;">             <b>Musée Beaux Arts</b><br>             <a href=https://www.google.com/maps/place/Mus%C3%A9e+Beaux+Arts/@48.1098443,-1.6731751,17z/data=!3m1!4b1!4m6!3m5!1s0x480ede4a82d89105:0x2b7e01a50f932500!8m2!3d48.1098443!4d-1.6731751!16s%2Fg%2F11f3y2jjll?entry=ttu&g_ep=EgoyMDI1MDMyNS4xIKXMDSoASAFQAw%3D%3D target="_blank">Google Maps</a><br>             </div>`)[0];
+                popup_28f08259f296a2ae4a991f80e79c031b.setContent(html_f1d0735170088192a6acec679fe79727);
+            
+        
+
+        marker_1a36ad5c39cef61cf89954bf84d344bd.bindPopup(popup_28f08259f296a2ae4a991f80e79c031b)
+        ;
+
+        
+    
+    
+                marker_1a36ad5c39cef61cf89954bf84d344bd.setIcon(icon_0c112ae6e38941977bd531a30abad9fd);
+            
+    
+            tile_layer_a691ad974611e0da56619fb0cd1e6870.addTo(map_f9786c2bc4f32371854c7a9794e15848);
+        
+    
+                marker_b3d029f7417ea3751ceba3d67055934f.setIcon(icon_e58945a05b48d2821a8c57ea5912ccf1);
+            
+    
+                marker_458eacc850b1918e5e503b9afcfd6990.setIcon(icon_7edf0e9a6d47eddf8e7a3b37a5a4ffdc);
+            
+    
+                marker_cee9e5ee2ac5746f4e506fda06cc81e6.setIcon(icon_2fcc6f2a177d5ae0e5b5a1c384ac94c0);
+            
+    
+                marker_3b4295447a24f7f6b901ca509141b644.setIcon(icon_d8ab38213389dd2cd08f7a3fbdbf11fd);
+            
+    
+                marker_79e525f2b14ee6b2b03f348419b42450.setIcon(icon_d246c03e0b49a575bd9e9d6c24f5dd99);
+            
+    
+                marker_524ab2a44624a0774dfc3e13ba0a8920.setIcon(icon_1c611e6896c6da9ca20d5a019cf379dc);
+            
+    
+                marker_866fd2601d1f9283bf432af2aa574613.setIcon(icon_fe1d48b8360489fbd61643a8f0f75ce1);
+            
+    
+                marker_3ad16bba3d8d8e6f8c27cf505319bda0.setIcon(icon_947f2e36a25ea303ea00884bc195cb86);
+            
+    
+                marker_94197dc3fdbe26c6bf37a06adab65d82.setIcon(icon_da9de7fa226ef0881ed3705eb4162c66);
+            
+    
+                marker_1a36ad5c39cef61cf89954bf84d344bd.setIcon(icon_0c112ae6e38941977bd531a30abad9fd);
+            
+</script>
 </html>
